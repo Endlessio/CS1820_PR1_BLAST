@@ -15,7 +15,7 @@ class LocalAlignment:
         self.output1 = ""
         self.output2 = ""
 
-    def local_alignment(self, idx):
+    def local_alignment(self, idx=0):
         seq1 = self.seq[idx]
         seq2 = self.seq[idx+1]
         row = len(seq1)
@@ -50,22 +50,22 @@ class LocalAlignment:
                         self.idx = (i-1,j-1)
 
 
-    def print_output(self):
+    def print_output(self, idx=0):
         i = self.idx[0]
         j = self.idx[1]
         while i+1>0 and j+1>0 and self.val_dp[i+1][j+1]>0:
             if self.pos_dp[i+1][j+1] == 2:
-                self.output1 = self.seq[0][i] + self.output1
-                self.output2 = self.seq[1][j] + self.output2
+                self.output1 = self.seq[idx][i] + self.output1
+                self.output2 = self.seq[idx+1][j] + self.output2
                 i -= 1
                 j -= 1
             elif self.pos_dp[i+1][j+1] == 1:
-                self.output1 = self.seq[0][i] + self.output1
+                self.output1 = self.seq[idx][i] + self.output1
                 self.output2 = "-" + self.output2
                 i -= 1
             elif self.pos_dp[i+1][j+1] == 3:
                 self.output1 = "-" + self.output1
-                self.output2 = self.seq[1][j] + self.output2
+                self.output2 = self.seq[idx][j] + self.output2
                 j -= 1
         print(self.output1)
         print(self.output2)
@@ -100,11 +100,12 @@ def preprocessing(argv):
 
     return seq, matrix, gap_penalty
 
+
 def main(argv):
     seq, matrix, gap_penalty = preprocessing(argv)
     
     align = LocalAlignment(seq, matrix, gap_penalty)
-    align.local_alignment(0)
+    align.local_alignment()
     align.print_output()
 
 

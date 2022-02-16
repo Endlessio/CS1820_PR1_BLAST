@@ -1,11 +1,10 @@
 import sys
+from os.path import exists
 from collections import defaultdict, Counter
 
 from local_alignment import LocalAlignment
 import random
 from random import randint
-import numpy as np
-import scipy.io as sio
 
 class Statistics(LocalAlignment):
     def __init__(self, db, matrix, imin, imax):
@@ -23,10 +22,12 @@ class Statistics(LocalAlignment):
         for ele in self.db:
             self.str_db += ele
         self.freq_dict = Counter(self.str_db)
-        print(self.freq_dict)
+        print("Amino Acid Amount:", self.freq_dict)
+        print("Total Amino Acid Chars:", sum(self.freq_dict.values()))
 
     
     def generate_random(self, num):
+        print("-- start to generate random sequence")
         sample_list = list(self.freq_dict.keys())
         i_weights = [self.freq_dict[ele] for ele in sample_list]
         with open('random.txt', 'w') as f:
@@ -36,12 +37,9 @@ class Statistics(LocalAlignment):
                 self.random_seq.append(cur_random)
                 f.write(cur_random)
                 f.write('\n')
-        # print(len(self.random_seq))
+        print("-- random.txt generated in /src")
 
 
-
-    def print_output(self):
-        pass
 
 
 def preprocessing(argv):
@@ -82,14 +80,22 @@ def main(argv):
     stat = Statistics(db, matrix, imin, imax)
     stat.freq()
     
-    stat.generate_random(num)
+    if not exists("./src/random.txt"):
+        stat.generate_random(num)
 
-    align = LocalAlignment(stat.random_seq, matrix, float("-inf"))
-    assert stat.random_seq == align.seq
-
-    for i in range(0,num,2):     
-        align.local_alignment(i)
-        print(i, align.imax)
+    align_res = []
+    
+    with open("./src/random.txt", "r") as f:
+        print("-- start alignment between random sequence")
+        print("-- the whole process might take 1 min")
+        for _ in range(0,num,2): 
+            align = LocalAlignment([f.readline().strip(), f.readline().strip()], matrix, float("-inf"))
+            align.local_alignment(0)
+            align_res.append(align.imax)
+            # align.print_output(i)
+            # print(i, align.imax)
+    print("alignment score result:", align_res)
+    print("alignment score statistics:", Counter(align_res))
 
     
 
