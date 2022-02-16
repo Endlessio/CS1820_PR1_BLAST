@@ -65,7 +65,7 @@ class LocalAlignment:
                 i -= 1
             elif self.pos_dp[i+1][j+1] == 3:
                 self.output1 = "-" + self.output1
-                self.output2 = self.seq[idx][j] + self.output2
+                self.output2 = self.seq[idx+1][j] + self.output2
                 j -= 1
         print(self.output1)
         print(self.output2)
