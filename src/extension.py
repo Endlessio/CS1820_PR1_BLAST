@@ -5,14 +5,17 @@ import heapq
 
 class Extension:
     def __init__(self, db, matrix, seed, X, S):
-        self.db = db
-        self.matrix = matrix
-        self.seed_num = int(seed[3])
-        self.seed_header = seed[:3]
-        if self.seed_num > 0:
-            self.seed_ele = seed[4:]
+        if len(db)>0:
+            self.db = db
         else:
-            raise Exception("seeds number equals 0")
+            raise Exception("ERROR: empty database")
+        self.matrix = matrix
+        if int(seed[3])>0:
+            self.seed_num = int(seed[3])
+        else:
+            raise Exception("ERROR: empty seed")
+        self.seed_header = seed[:3]
+        self.seed_ele = seed[4:]
         self.X = X
         self.S = S
 
@@ -46,6 +49,7 @@ class Extension:
 
     def calculate(self, cur_seed_list):
         db_idx = int(cur_seed_list[1])
+        assert db_idx<len(self.db), "ERROR: mismatched DB seq num and current DB"
         db_start_idx = int(cur_seed_list[3])
         q_start_idx = int(cur_seed_list[5])
 
@@ -127,7 +131,9 @@ def preprocessing(argv):
     # get db
     with open(argv[1]) as f:
         for line in f.readlines():
-            db.append(line.strip())
+            cur = line.strip()
+            assert cur!="", "ERROR: empty string in DB"
+            db.append(cur)
 
     # get matrix
     with open(argv[2]) as f:
@@ -141,10 +147,12 @@ def preprocessing(argv):
             for j in range(col):
                 matrix[chars[i]][chars[j]] = int(temp[i][j])
 
-    # get k
+    # get seed
     with open(argv[3]) as f:
         for line in f.readlines():
-            seed.append(line.strip())
+            cur = line.strip()
+            assert cur!="", "ERROR: empty string in seed"
+            seed.append(cur)
 
     # get X
     X = int(argv[4])

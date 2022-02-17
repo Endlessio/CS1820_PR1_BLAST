@@ -3,10 +3,18 @@ from collections import defaultdict
 from itertools import product
 import heapq
 
+from cv2 import exp
+
 class Seeding:
     def __init__(self, db, query, matrix, k, T):
-        self.db = db
-        self.query = query
+        if len(db)>0:
+            self.db = db
+        else:
+            raise Exception("ERROR: empty database")
+        if len(query)>0:
+            self.query = query
+        else:
+            raise Exception("ERROR: empty query")
         self.matrix = matrix
         self.k = k
         self.T = T
@@ -31,7 +39,7 @@ class Seeding:
     def find_query_kmer(self):
         for q in self.query:
             length = len(q)
-            assert length >= self.k, "invalid query and k setting"
+            assert length >= self.k, "ERROR: invalid query and k setting"
 
             for i in range(length-self.k+1):
                 cur = q[i:i+self.k]
