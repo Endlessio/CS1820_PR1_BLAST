@@ -31,7 +31,7 @@ class Seeding:
     def find_query_kmer(self):
         for q in self.query:
             length = len(q)
-            assert length >= self.k
+            assert length >= self.k, "invalid query and k setting"
 
             for i in range(length-self.k+1):
                 cur = q[i:i+self.k]

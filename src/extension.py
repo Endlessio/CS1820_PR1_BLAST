@@ -9,7 +9,10 @@ class Extension:
         self.matrix = matrix
         self.seed_num = int(seed[3])
         self.seed_header = seed[:3]
-        self.seed_ele = seed[4:]
+        if self.seed_num > 0:
+            self.seed_ele = seed[4:]
+        else:
+            raise Exception("seeds number equals 0")
         self.X = X
         self.S = S
 

@@ -1,3 +1,4 @@
+from distutils.log import error
 import sys
 from collections import defaultdict
 
@@ -16,6 +17,8 @@ class LocalAlignment:
         self.output2 = ""
 
     def local_alignment(self, idx=0):
+        if len(self.seq)<idx+1:
+            raise Exception("invalid sequence amount for alignment")
         seq1 = self.seq[idx]
         seq2 = self.seq[idx+1]
         row = len(seq1)
